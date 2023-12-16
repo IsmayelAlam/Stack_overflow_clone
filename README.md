@@ -1,4 +1,4 @@
-# Stack Overflow Clone
+# Stack Overflow
 
 ## Description
 
