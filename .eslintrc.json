@@ -6,6 +6,6 @@
     "prettier"
   ],
   "rules": {
-    "camelcase": ["error", { "ignoreGlobals": true }]
+    "camelcase": ["error", { "ignoreImports": true }]
   }
 }
