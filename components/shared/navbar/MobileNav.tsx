@@ -1,18 +1,15 @@
-import React from "react";
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+import { Button } from "@/components/ui/button";
+import { SignedOut } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { SignedOut } from "@clerk/nextjs";
-import { Button } from "@/components/ui/button";
+import NavContent from "./NavContent";
 
 export default function MobileNav() {
   return (
@@ -69,8 +66,4 @@ export default function MobileNav() {
       </SheetContent>
     </Sheet>
   );
-}
-
-function NavContent() {
-  return <div>NavContent</div>;
 }
