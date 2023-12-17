@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Theme from "./Theme";
 import MobileNav from "./MobileNav";
+import GlobalSearch from "../search/GlobalSearch";
 
 export default function Navbar() {
   return (
@@ -18,7 +19,7 @@ export default function Navbar() {
           stack<span className="text-primary-500">Overflow</span>
         </p>
       </Link>
-      {/* GlobalSearch */}
+      <GlobalSearch />
       <div className="flex-between gap-5">
         <Theme />
         <SignedIn>
