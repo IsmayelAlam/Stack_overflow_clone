@@ -16,7 +16,7 @@ export default function NavLink({ link }: { link: SidebarLink }) {
     <Link
       href={link.route}
       key={link.route}
-      className={`flex cursor-pointer items-center justify-start gap-4 bg-transparent p-4 max-lg:justify-center max-sm:justify-start ${
+      className={`flex cursor-pointer items-center justify-start gap-4 bg-transparent p-4 ${
         isActive
           ? "primary-gradient rounded-lg text-light-900"
           : "text-dark300_light900"
