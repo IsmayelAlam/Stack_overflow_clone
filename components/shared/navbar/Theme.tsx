@@ -8,7 +8,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { THEMES } from "@/constants";
-import { useTheme } from "@/context/ThemeProvider";
+import { useTheme } from "@/hooks/useTheme";
 import Image from "next/image";
 
 export default function Theme() {

@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { SignedOut } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import NavContent from "./NavContent";
+import { sidebarLinks } from "@/constants";
+import NavLink from "./NavLink";
 
 export default function MobileNav() {
   return (
@@ -38,9 +39,17 @@ export default function MobileNav() {
             stack<span className="text-primary-500">Overflow</span>
           </p>
         </Link>
-        <div>
+        <div className="flex h-full flex-col justify-between pb-10">
           <SheetClose asChild>
-            <NavContent />
+            <section className="flex h-full flex-col gap-6 pt-16">
+              {sidebarLinks.map((link) => {
+                return (
+                  <SheetClose asChild key={link.route}>
+                    <NavLink link={link} />
+                  </SheetClose>
+                );
+              })}
+            </section>
           </SheetClose>
 
           <SignedOut>

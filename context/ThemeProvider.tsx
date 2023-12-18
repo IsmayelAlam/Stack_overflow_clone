@@ -8,7 +8,9 @@ interface ThemeContextType {
   setMode: (mode: string) => void;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(
+  undefined
+);
 
 const sysMode = window?.matchMedia("(prefers-color-scheme: dark)").matches
   ? "dark"
@@ -36,14 +38,4 @@ export default function ThemeProvider({
       {children}
     </ThemeContext.Provider>
   );
-}
-
-export function useTheme() {
-  const context = useContext(ThemeContext);
-
-  if (context === undefined) {
-    throw new Error("theme context used outside of theme provider");
-  }
-
-  return context;
 }
