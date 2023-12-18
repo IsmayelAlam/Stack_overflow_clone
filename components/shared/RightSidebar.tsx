@@ -47,49 +47,49 @@ export default function RightSidebar() {
 /// /////////////----------------------->
 const questions = [
   {
-    id: 1,
+    id: "1",
     ques: "question 01?",
   },
   {
-    id: 2,
+    id: "2",
     ques: "question 02?",
   },
   {
-    id: 3,
+    id: "3",
     ques: "question 03?",
   },
   {
-    id: 4,
+    id: "4",
     ques: "question 04?",
   },
   {
-    id: 5,
+    id: "5",
     ques: "question 05?",
   },
 ];
 const popularTags = [
   {
-    _id: 1,
+    _id: "1",
     name: "JS",
     totalQuestions: 25,
   },
   {
-    _id: 2,
+    _id: "2",
     name: "NextJS",
     totalQuestions: 55,
   },
   {
-    _id: 3,
+    _id: "3",
     name: "Server",
     totalQuestions: 20,
   },
   {
-    _id: 4,
+    _id: "4",
     name: "NodeJS",
     totalQuestions: 10,
   },
   {
-    _id: 5,
+    _id: "5",
     name: "TS",
     totalQuestions: 5,
   },

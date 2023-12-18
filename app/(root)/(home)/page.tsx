@@ -1,3 +1,4 @@
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/home/HomeFilter";
 import Filter from "@/components/shared/Filter";
 import NoResults from "@/components/shared/NoResults";
@@ -5,7 +6,6 @@ import LocalSearch from "@/components/shared/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
 import Link from "next/link";
-import { title } from "process";
 
 export default function Home() {
   return (
@@ -35,7 +35,19 @@ export default function Home() {
       <HomeFilter />
       <div className="mt-10 flex flex-col gap-6">
         {ques.length > 0 ? (
-          ques.map((q) => "q")
+          ques?.map((question) => (
+            <QuestionCard
+              key={question._id}
+              _id={question._id}
+              title={question.title}
+              tags={question.tags}
+              author={question.author}
+              upvotes={question.upvotes}
+              views={question.views}
+              answers={question.answers}
+              createdAt={question.createdAt}
+            />
+          ))
         ) : (
           <NoResults
             title="There is no quesiton to show"
@@ -49,32 +61,31 @@ export default function Home() {
   );
 }
 
-const ques = [];
-// [
-//   {
-//     _id: 1,
-//     title: "python import function?",
-//     tags: [
-//       { _id: 1, name: "python" },
-//       { _id: 2, name: "sql" },
-//     ],
-//     author: "jhon",
-//     upvotes: 10,
-//     views: 100,
-//     answers: 2,
-//     createdAt: "2023-09-01T12:00:00.000Z",
-//   },
-//   {
-//     _id: 2,
-//     title: "Center a div in html?",
-//     tags: [
-//       { _id: 1, name: "html" },
-//       { _id: 2, name: "css" },
-//     ],
-//     author: "Jassy",
-//     upvotes: 8,
-//     views: 120,
-//     answers: 5,
-//     createdAt: "2023-09-01T12:00:00.000Z",
-//   },
-// ];
+const ques = [
+  {
+    _id: "1",
+    title: "python import function?",
+    tags: [
+      { _id: "1", name: "python" },
+      { _id: "2", name: "sql" },
+    ],
+    author: { name: "John", _id: "1", picture: "/assets/icons/avatar.svg" },
+    upvotes: 10000,
+    views: 100,
+    answers: [{}],
+    createdAt: new Date("2023-09-01T12:00:00.000Z"),
+  },
+  {
+    _id: "2",
+    title: "Center a div in html?",
+    tags: [
+      { _id: "1", name: "html" },
+      { _id: "2", name: "css" },
+    ],
+    author: { name: "Jassy", _id: "2", picture: "/assets/icons/avatar.svg" },
+    upvotes: 8,
+    views: 120,
+    answers: [{}],
+    createdAt: new Date("2023-09-01T12:00:00.000Z"),
+  },
+];
