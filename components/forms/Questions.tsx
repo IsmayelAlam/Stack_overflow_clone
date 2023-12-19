@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -11,30 +12,44 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useTheme } from "@/hooks/useTheme";
 import { questionSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
-import React, { useRef } from "react";
+import Image from "next/image";
+import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Badge } from "../ui/badge";
-import Image from "next/image";
-import { useTheme } from "@/hooks/useTheme";
+import { createQuestion } from "@/lib/actions/question.action";
+
+const type: any = "Create";
 
 export default function Questions() {
   const editorRef = useRef(null);
   const { mode } = useTheme();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
       title: "",
+      explanation: "",
       tags: [],
     },
   });
 
-  function onSubmit(values: z.infer<typeof questionSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof questionSchema>) {
+    setIsSubmitting(true);
+
+    try {
+      console.log(values);
+      // await createQuestion({});
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const handleInputKeyDown = (
@@ -69,7 +84,7 @@ export default function Questions() {
   };
 
   return (
-    <Form {...form} className="flex w-full flex-col gap-10">
+    <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
@@ -107,6 +122,9 @@ export default function Questions() {
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   // @ts-ignore
                   onInit={(evt, editor) => (editorRef.current = editor)}
+                  initialValue=""
+                  onBlur={field.onBlur}
+                  onEditorChange={(content) => field.onChange(content)}
                   init={{
                     height: 350,
                     menubar: false,
@@ -131,9 +149,8 @@ export default function Questions() {
                       "undo redo |  " +
                       "codesample | bold italic forecolor | alignleft aligncenter " +
                       "alignright alignjustify | bullist numlist ",
-                    // eslint-disable-next-line camelcase
-                    content_style: "body { font-family:Inter; font-size:16px }",
                     skin: mode === "dark" ? "oxide-dark" : "oxide",
+                    content_style: "body { font-family:Inter; font-size:16px }",
                     content_css: mode === "dark" ? "dark" : "light",
                   }}
                 />
@@ -159,6 +176,7 @@ export default function Questions() {
                   <Input
                     className="no-focus paragraph-regular background-light900_dark300 light-border-2 text-dark400_light700 min-h-[56px] border"
                     placeholder="Add tags..."
+                    disabled={type === "Edit"}
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
                   />
                   {field.value.length > 0 && (
@@ -167,16 +185,22 @@ export default function Questions() {
                         <Badge
                           key={tag}
                           className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
-                          onClick={() => handleTagRemove(tag, field)}
+                          onClick={() =>
+                            type !== "Edit"
+                              ? handleTagRemove(tag, field)
+                              : () => {}
+                          }
                         >
                           <span>{tag} </span>
-                          <Image
-                            src="/assets/icons/close.svg"
-                            alt="close icon"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain invert-0 dark:invert"
-                          />
+                          {type !== "Edit" && (
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="close icon"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain invert-0 dark:invert"
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>
@@ -194,8 +218,13 @@ export default function Questions() {
         <Button
           type="submit"
           className="primary-gradient mb-5 w-fit !text-light-900"
+          disabled={isSubmitting}
         >
-          Submit
+          {isSubmitting ? (
+            <>{type === "Edit" ? "Editing..." : "Posting"}</>
+          ) : (
+            <>{type === "Edit" ? "Edit Queston" : "Ask a question"}</>
+          )}
         </Button>
       </form>
     </Form>
