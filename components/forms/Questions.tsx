@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 "use client";
 
+import { createQuestion } from "@/actions/question.action";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,18 +18,20 @@ import { questionSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Badge } from "../ui/badge";
-import { createQuestion } from "@/lib/actions/question.action";
 
 const type: any = "Create";
 
-export default function Questions() {
+export default function Questions({ userId }: { userId: string }) {
   const editorRef = useRef(null);
   const { mode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const form = useForm<z.z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
@@ -43,8 +46,15 @@ export default function Questions() {
     setIsSubmitting(true);
 
     try {
-      console.log(values);
-      // await createQuestion({});
+      await createQuestion({
+        title: values.title,
+        content: values.explanation,
+        tags: values.tags,
+        author: JSON.parse(userId),
+        path: pathname,
+      });
+
+      router.push("/");
     } catch (error) {
       console.log(error);
     } finally {
