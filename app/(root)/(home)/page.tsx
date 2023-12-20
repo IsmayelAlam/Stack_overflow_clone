@@ -63,32 +63,3 @@ export default async function Home() {
     </>
   );
 }
-
-const ques = [
-  {
-    _id: "1",
-    title: "python import function?",
-    tags: [
-      { _id: "1", name: "python" },
-      { _id: "2", name: "sql" },
-    ],
-    author: { name: "John", _id: "1", picture: "/assets/icons/avatar.svg" },
-    upvotes: 10000,
-    views: 100,
-    answers: [{}],
-    createdAt: new Date("2023-09-01T12:00:00.000Z"),
-  },
-  {
-    _id: "2",
-    title: "Center a div in html?",
-    tags: [
-      { _id: "1", name: "html" },
-      { _id: "2", name: "css" },
-    ],
-    author: { name: "Jassy", _id: "2", picture: "/assets/icons/avatar.svg" },
-    upvotes: 8,
-    views: 120,
-    answers: [{}],
-    createdAt: new Date("2023-09-01T12:00:00.000Z"),
-  },
-];
