@@ -6,9 +6,9 @@ import User from "@/database/user.model";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../lib/mongoose";
-import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
+import { CreateQuestionParams } from "./shared.types";
 
-export async function getQuestions(params: GetQuestionsParams) {
+export async function getQuestions() {
   try {
     connectToDatabase();
 
