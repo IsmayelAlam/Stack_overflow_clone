@@ -12,16 +12,21 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined
 );
 
+const system = window.matchMedia("(prefers-color-scheme: dark)").matches
+  ? "dark"
+  : "light";
+
 export default function ThemeProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [mode, setMode] = useLocalStorageState(getSystemTheme(), "theme");
+  const [mode, setMode] = useLocalStorageState(system, "theme");
+  // const [mode, setMode] = useLocalStorageState(getSystemTheme(), "theme");
 
-  useEffect(() => {
-    mode || setMode(getSystemTheme());
-  });
+  // useEffect(() => {
+  //   mode || setMode(getSystemTheme());
+  // });
 
   useEffect(() => {
     if (mode === "light") {
@@ -40,12 +45,12 @@ export default function ThemeProvider({
   );
 }
 
-function getSystemTheme() {
-  if (typeof window !== "undefined") {
-    const system = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-    return system;
-  }
-  return "dark";
-}
+// function getSystemTheme() {
+//   if (typeof window !== "undefined") {
+//     const system = window.matchMedia("(prefers-color-scheme: dark)").matches
+//       ? "dark"
+//       : "light";
+//     return system;
+//   }
+//   return "dark";
+// }
