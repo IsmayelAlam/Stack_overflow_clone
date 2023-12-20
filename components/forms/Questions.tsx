@@ -46,13 +46,15 @@ export default function Questions({ userId }: { userId: string }) {
     setIsSubmitting(true);
 
     try {
-      await createQuestion({
+      const newQuestion = {
         title: values.title,
         content: values.explanation,
         tags: values.tags,
         author: JSON.parse(userId),
         path: pathname,
-      });
+      };
+
+      await createQuestion(newQuestion);
 
       router.push("/");
     } catch (error) {
@@ -75,7 +77,7 @@ export default function Questions({ userId }: { userId: string }) {
         if (tagValue.length > 15) {
           return form.setError("tags", {
             type: "required",
-            message: "Tag must be less than 15 characters",
+            message: "Tag must be less than 20 characters",
           });
         }
         if (!field.value.includes(tagValue as never)) {
@@ -218,7 +220,7 @@ export default function Questions({ userId }: { userId: string }) {
                 </>
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Add up to 3 tags to describe what your question is about. You
+                Add up to 5 tags to describe what your question is about. You
                 need to press enter to add a tag.
               </FormDescription>
               <FormMessage className="text-red-500" />

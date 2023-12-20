@@ -17,13 +17,10 @@ export default function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [mode, setMode] = useLocalStorageState(null, "theme");
+  const [mode, setMode] = useLocalStorageState(getSystemTheme(), "theme");
 
   useEffect(() => {
-    const system = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-    mode || setMode(system);
+    mode || setMode(getSystemTheme());
   });
 
   useEffect(() => {
@@ -41,4 +38,14 @@ export default function ThemeProvider({
       {children}
     </ThemeContext.Provider>
   );
+}
+
+function getSystemTheme() {
+  if (typeof window !== "undefined") {
+    const system = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+    return system;
+  }
+  return "dark";
 }

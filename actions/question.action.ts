@@ -1,16 +1,40 @@
 "use server";
 
-import Interaction from "@/database/interaction.model";
 import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
+import { FilterQuery } from "mongoose";
+import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../lib/mongoose";
-import { CreateQuestionParams } from "./shared.types";
+import { CreateQuestionParams, GetQuestionsParams } from "./shared.types";
+
+export async function getQuestions(params: GetQuestionsParams) {
+  try {
+    connectToDatabase();
+
+    // calculate the no of posts to skip based on page number and page size
+    // pagination: skip = (page - 1) * pageSize
+
+    const query: FilterQuery<typeof Question> = {};
+
+    const questions = await Question.find(query)
+      .populate({
+        path: "tags",
+        model: Tag,
+      })
+      .populate({ path: "author", model: User });
+
+    return { questions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 export async function createQuestion(params: CreateQuestionParams) {
   try {
     connectToDatabase();
-    const { title, content, tags, author } = params;
+    const { title, content, tags, author, path } = params;
 
     const question = await Question.create({
       title,
@@ -38,15 +62,10 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     // create a interaction record for the user's ask question action
-    await Interaction.create({
-      user: author,
-      question: question._id,
-      action: "ask-question",
-      tags: tagDoc,
-    });
 
     // increment author reputation by +5 points for creating a question
-    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
   }
