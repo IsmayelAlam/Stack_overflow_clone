@@ -229,7 +229,9 @@ export default function Questions({ userId }: { userId: string }) {
         />
         <Button
           type="submit"
-          className="primary-gradient mb-5 w-fit !text-light-900"
+          className={`primary-gradient mb-5 w-fit !text-light-900 ${
+            isSubmitting && "cursor-wait"
+          }`}
           disabled={isSubmitting}
         >
           {isSubmitting ? (

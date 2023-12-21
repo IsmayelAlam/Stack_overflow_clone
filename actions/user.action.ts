@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   UpdateUserParams,
 } from "./shared.types";
 
@@ -16,6 +17,19 @@ export async function getUserById(params: any) {
     // get user by id
     const user = await User.findOne({ clerkId: userId });
 
+    return user;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    connectToDatabase();
+
+    // const { filter, page = 1, pageSize, searchQuery } = params;
+
+    const user = await User.find();
     return user;
   } catch (error) {
     console.log(error);
