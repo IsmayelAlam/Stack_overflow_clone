@@ -66,8 +66,9 @@ export async function POST(req: Request) {
       picture: image_url,
     });
 
-    return NextResponse.json({ message: "ok", user: mongoUser });
-  } else if (eventType === "user.updated") {
+    return NextResponse.json({ user: mongoUser });
+  }
+  if (eventType === "user.updated") {
     const { id, email_addresses, image_url, username, first_name, last_name } =
       evt.data;
 
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
       path: `/profile/${id}`,
     });
 
-    return NextResponse.json({ message: "ok", user: mongoUser });
+    return NextResponse.json({ user: mongoUser });
   }
   if (eventType === "user.deleted") {
     const { id } = evt.data;
@@ -91,7 +92,7 @@ export async function POST(req: Request) {
       clerkId: id!,
     });
 
-    return NextResponse.json({ message: "ok", user });
+    return NextResponse.json({ user });
   }
 
   return new Response("", { status: 200 });

@@ -59,9 +59,9 @@ export async function deleteUser(params: DeleteUserParams) {
 
     if (!user) throw new Error("user not found");
 
-    const userQuestions = await Question.find({ author: user._id }).distinct(
-      "_id"
-    );
+    // const userQuestions = await Question.find({ author: user._id }).distinct(
+    //   "_id"
+    // );
 
     await Question.deleteMany({ author: user._id });
 
