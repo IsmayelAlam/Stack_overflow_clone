@@ -1,4 +1,5 @@
 import { getQuestionsById } from "@/actions/question.action";
+import Answer from "@/components/forms/Answer";
 import Metric from "@/components/shared/Metric";
 import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
@@ -6,7 +7,7 @@ import { formatAndDivideNumber, getTimeStamp } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string } }) {
   const question = await getQuestionsById({ questionId: params.id });
 
   return (
@@ -70,6 +71,8 @@ export default async function page({ params }: { params: { id: string } }) {
           />
         ))}
       </div>
+
+      <Answer />
     </>
   );
 }

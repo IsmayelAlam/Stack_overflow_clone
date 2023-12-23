@@ -5,3 +5,7 @@ export const questionSchema = z.object({
   explanation: z.string().min(100),
   tags: z.array(z.string().min(1).max(20)).min(1).max(5),
 });
+
+export const answerSchema = z.object({
+  answer: z.string().min(100),
+});

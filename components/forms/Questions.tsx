@@ -21,7 +21,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { z } from "zod";
 import { Badge } from "../ui/badge";
 
 const type: any = "Create";
@@ -33,7 +33,7 @@ export default function Questions({ userId }: { userId: string }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const form = useForm<z.z.infer<typeof questionSchema>>({
+  const form = useForm<z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
       title: "",
