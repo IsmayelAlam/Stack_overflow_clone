@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useTheme } from "@/hooks/useTheme";
 import { questionSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
@@ -23,6 +22,7 @@ import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
+import { useTheme } from "@/context/ThemeProvider";
 
 const type: any = "Create";
 

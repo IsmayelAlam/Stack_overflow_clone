@@ -5,7 +5,6 @@ import { CreateAnswerParams, GetAnswersParams } from "./shared.types";
 import Answer from "@/database/answer.model";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
-import error from "next/error";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {

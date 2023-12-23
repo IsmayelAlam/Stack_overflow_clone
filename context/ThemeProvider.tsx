@@ -1,7 +1,6 @@
 "use client";
 
-import { useLocalStorageState } from "@/hooks/useLocalStroage";
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface ThemeContextType {
   mode: string;
@@ -17,20 +16,24 @@ export default function ThemeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [mode, setMode] = useLocalStorageState(getSystemTheme(), "theme");
+  const [mode, setMode] = useState("");
 
-  useEffect(() => {
-    mode || setMode(getSystemTheme());
-  });
-
-  useEffect(() => {
-    if (mode === "light") {
-      document.documentElement.classList.add("light");
-      document.documentElement.classList.remove("dark");
-    } else {
+  const handleThemeChange = () => {
+    if (
+      localStorage.theme === "dark" ||
+      (!("theme" in localStorage) &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    ) {
+      setMode("dark");
       document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
+    } else {
+      setMode("light");
+      document.documentElement.classList.remove("dark");
     }
+  };
+
+  useEffect(() => {
+    handleThemeChange();
   }, [mode]);
 
   return (
@@ -40,12 +43,12 @@ export default function ThemeProvider({
   );
 }
 
-function getSystemTheme() {
-  if (typeof window !== "undefined") {
-    const system = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-    return system;
+export function useTheme() {
+  const context = useContext(ThemeContext);
+
+  if (context === undefined) {
+    throw new Error("theme context used outside of theme provider");
   }
-  return "dark";
+
+  return context;
 }

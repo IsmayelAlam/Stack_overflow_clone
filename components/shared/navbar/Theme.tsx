@@ -8,7 +8,7 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import { THEMES } from "@/constants";
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "@/context/ThemeProvider";
 import Image from "next/image";
 
 export default function Theme() {
@@ -19,7 +19,7 @@ export default function Theme() {
       <MenubarMenu>
         <MenubarTrigger className="focus:bg-light-900 data-[state=open]:bg-light-900 dark:focus:bg-dark-200 dark:data-[state=open]:bg-dark-200">
           <Image
-            src={`/assets/icons/${mode || "dark"}.svg`}
+            src={`/assets/icons/${mode}.svg`}
             width={20}
             height={20}
             alt="theme toggle button"
@@ -31,7 +31,14 @@ export default function Theme() {
             <MenubarItem
               key={theme.value}
               className="flex cursor-pointer items-center gap-4 px-2.5 py-2 dark:focus:bg-dark-400"
-              onClick={() => setMode(theme.value)}
+              onClick={() => {
+                setMode(theme.value);
+                if (theme.value !== "system") {
+                  localStorage.theme = theme.value;
+                } else {
+                  localStorage.removeItem("theme");
+                }
+              }}
             >
               <Image
                 src={theme.icon}

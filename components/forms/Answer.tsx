@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 "use client";
 
-import { useTheme } from "@/hooks/useTheme";
 import { answerSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
@@ -19,6 +18,7 @@ import {
 } from "../ui/form";
 import { createAnswer } from "@/actions/answer.action";
 import { usePathname } from "next/navigation";
+import { useTheme } from "@/context/ThemeProvider";
 
 interface Props {
   question: string;

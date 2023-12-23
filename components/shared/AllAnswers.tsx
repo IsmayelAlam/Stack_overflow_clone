@@ -5,6 +5,7 @@ import { getTimeStamp } from "@/lib/utils";
 import ParseHTML from "./ParseHTML";
 import Image from "next/image";
 import Link from "next/link";
+import Votes from "./Votes";
 
 interface Props {
   questionId: string;
@@ -57,7 +58,7 @@ export default async function AllAnswers({
                 </div>
               </Link>
               {/* Voting section */}
-              <div className="flex justify-end">vote</div>
+              <div className="flex justify-end">{/* <Votes /> */}</div>
             </div>
             <ParseHTML data={answer.content} />
           </article>
