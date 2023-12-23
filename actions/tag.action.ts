@@ -22,6 +22,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     throw error;
   }
 }
+
 export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
