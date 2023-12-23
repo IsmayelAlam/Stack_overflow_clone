@@ -1,5 +1,6 @@
 import { getQuestionsById } from "@/actions/question.action";
 import Metric from "@/components/shared/Metric";
+import ParseHTML from "@/components/shared/ParseHTML";
 import RenderTag from "@/components/shared/RenderTag";
 import { formatAndDivideNumber, getTimeStamp } from "@/lib/utils";
 import Image from "next/image";
@@ -27,6 +28,7 @@ export default async function page({ params }: { params: { id: string } }) {
               {question.author.name}
             </p>
           </Link>
+          <div className="flex justify-end">voting</div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
           {question.title}
@@ -36,8 +38,8 @@ export default async function page({ params }: { params: { id: string } }) {
         <Metric
           imgUrl="/assets/icons/clock.svg"
           alt="=clock icon"
-          value={`- asked ${getTimeStamp(question.createdAt)}`}
-          title="Votes"
+          value={`asked ${getTimeStamp(question.createdAt)}`}
+          title=""
           textStyles="small-medium text-dark400_light800"
         />
         <Metric
@@ -55,6 +57,8 @@ export default async function page({ params }: { params: { id: string } }) {
           textStyles="small-medium text-dark400_light800"
         />
       </div>
+
+      <ParseHTML data={question.content} />
 
       <div className="mt-8 flex flex-wrap gap-2">
         {question.tags.map((tag: any) => (
