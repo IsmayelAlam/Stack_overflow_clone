@@ -6,9 +6,15 @@ import RenderTag from "@/components/shared/RenderTag";
 import { formatAndDivideNumber, getTimeStamp } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@clerk/nextjs";
+import { getUserById } from "@/actions/user.action";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const question = await getQuestionsById({ questionId: params.id });
+
+  const { userId: clerkId } = auth();
+  let mongoUser;
+  if (clerkId) mongoUser = await getUserById({ userId: clerkId });
 
   return (
     <>
@@ -72,7 +78,11 @@ export default async function Page({ params }: { params: { id: string } }) {
         ))}
       </div>
 
-      <Answer />
+      <Answer
+        question={question.content}
+        questionId={JSON.stringify(question._id)}
+        authorId={JSON.stringify(mongoUser._id)}
+      />
     </>
   );
 }

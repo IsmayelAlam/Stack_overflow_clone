@@ -17,10 +17,19 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
+import { createAnswer } from "@/actions/answer.action";
+import { usePathname } from "next/navigation";
 
-export default function Answer() {
-  const editorRef = useRef(null);
+interface Props {
+  question: string;
+  questionId: string;
+  authorId: string;
+}
+
+export default function Answer({ question, questionId, authorId }: Props) {
   const { mode } = useTheme();
+  const pathname = usePathname();
+  const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof answerSchema>>({
@@ -30,8 +39,27 @@ export default function Answer() {
     },
   });
 
-  const handleCreateAnswer = () => {
+  const handleCreateAnswer = async (values: z.infer<typeof answerSchema>) => {
     setIsSubmitting(true);
+    try {
+      await createAnswer({
+        content: values.answer,
+        author: JSON.parse(authorId),
+        question: JSON.parse(questionId),
+        path: pathname,
+      });
+
+      form.reset();
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent("");
+      }
+    } catch (error) {
+      console.log(error);
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
