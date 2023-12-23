@@ -1,3 +1,5 @@
+"use server";
+
 import Question from "@/database/question.model";
 import User from "@/database/user.model";
 import { connectToDatabase } from "@/lib/mongoose";
@@ -6,6 +8,7 @@ import {
   CreateUserParams,
   DeleteUserParams,
   GetAllUsersParams,
+  ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
 
@@ -23,6 +26,7 @@ export async function getUserById(params: any) {
     throw error;
   }
 }
+
 export async function getAllUsers(params: GetAllUsersParams) {
   try {
     connectToDatabase();
@@ -63,6 +67,7 @@ export async function updateUser(params: UpdateUserParams) {
     throw error;
   }
 }
+
 export async function deleteUser(params: DeleteUserParams) {
   try {
     connectToDatabase();
@@ -82,6 +87,38 @@ export async function deleteUser(params: DeleteUserParams) {
     const deletedUser = await User.findByIdAndDelete(user._id);
 
     return deletedUser;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function toggleSaveQuestion(params: ToggleSaveQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, questionId, path } = params;
+
+    const user = await User.findById(userId);
+    if (!user) throw new Error("no user found");
+
+    const isSaved = user.saved.includes(questionId);
+
+    if (isSaved) {
+      await User.findByIdAndUpdate(
+        userId,
+        { $pull: { saved: questionId } },
+        { new: true }
+      );
+    } else {
+      await User.findByIdAndUpdate(
+        userId,
+        { $addToSet: { saved: questionId } },
+        { new: true }
+      );
+    }
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;

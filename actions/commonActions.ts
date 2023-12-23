@@ -1,3 +1,5 @@
+"use server";
+
 import Answer from "@/database/answer.model";
 import Question from "@/database/question.model";
 import { CommonVoteParams } from "./shared.types";

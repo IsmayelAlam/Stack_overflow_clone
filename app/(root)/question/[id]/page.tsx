@@ -11,7 +11,7 @@ import { getUserById } from "@/actions/user.action";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Votes from "@/components/shared/Votes";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Question({ params }: { params: { id: string } }) {
   const question = await getQuestionsById({ questionId: params.id });
 
   const { userId: clerkId } = auth();

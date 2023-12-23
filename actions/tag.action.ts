@@ -1,3 +1,5 @@
+"use server";
+
 import { connectToDatabase } from "@/lib/mongoose";
 import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared.types";
 import Tag from "@/database/tag.model";

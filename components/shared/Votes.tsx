@@ -2,6 +2,7 @@
 
 import { downVoteAnswer, upvoteAnswer } from "@/actions/answer.action";
 import { downVoteQuestion, upvoteQuestion } from "@/actions/question.action";
+import { toggleSaveQuestion } from "@/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -29,7 +30,13 @@ export default function Votes({
 }: Props) {
   const pathname = usePathname();
 
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    await toggleSaveQuestion({
+      questionId: JSON.parse(itemId),
+      userId: JSON.parse(userId),
+      path: pathname,
+    });
+  };
 
   const handleVote = async (action: string) => {
     if (!userId) throw new Error("user not found");
