@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@clerk/nextjs";
 import { getUserById } from "@/actions/user.action";
+import AllAnswers from "@/components/shared/AllAnswers";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const question = await getQuestionsById({ questionId: params.id });
@@ -77,6 +78,12 @@ export default async function Page({ params }: { params: { id: string } }) {
           />
         ))}
       </div>
+
+      <AllAnswers
+        questionId={question.id}
+        userId={JSON.stringify(mongoUser._id)}
+        totalAnswers={question.answers.length}
+      />
 
       <Answer
         question={question.content}
