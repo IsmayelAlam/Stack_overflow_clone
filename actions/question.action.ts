@@ -6,13 +6,17 @@ import User from "@/database/user.model";
 import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../lib/mongoose";
-import { CreateQuestionParams, GetQuestionByIdParams } from "./shared.types";
+import {
+  CreateQuestionParams,
+  GetQuestionByIdParams,
+  QuestionVoteParams,
+} from "./shared.types";
+import { voting } from "./commonActions";
+import console from "console";
 
 export async function getQuestions() {
   try {
     connectToDatabase();
-
-    // calculate the no of posts to skip based on page number and page size
 
     const query: FilterQuery<typeof Question> = {};
 
@@ -63,7 +67,6 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     const tagDoc = [];
-    // create tags or get them if they already exist
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
         {
@@ -81,12 +84,54 @@ export async function createQuestion(params: CreateQuestionParams) {
       $push: { tags: { $each: tagDoc } },
     });
 
-    // create a interaction record for the user's ask question action
-
-    // increment author reputation by +5 points for creating a question
-
     revalidatePath(path);
   } catch (error) {
     console.log(error);
   }
 }
+
+export const upvoteQuestion = async (params: QuestionVoteParams) => {
+  try {
+    connectToDatabase();
+
+    const { questionId, userId, hasupVoted, path, hasdownVoted } = params;
+
+    await voting({
+      id: questionId,
+      userId,
+      hasupVoted,
+      hasdownVoted,
+      type: "question",
+      vote: "up",
+    });
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const downVoteQuestion = async (params: QuestionVoteParams) => {
+  try {
+    connectToDatabase();
+
+    const { questionId, userId, hasupVoted, path, hasdownVoted } = params;
+
+    console.log(params);
+
+    await voting({
+      id: questionId,
+      userId,
+      hasupVoted,
+      hasdownVoted,
+      type: "question",
+      vote: "down",
+    });
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

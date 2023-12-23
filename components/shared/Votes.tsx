@@ -1,7 +1,10 @@
 "use client";
 
+import { downVoteAnswer, upvoteAnswer } from "@/actions/answer.action";
+import { downVoteQuestion, upvoteQuestion } from "@/actions/question.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 interface Props {
   type: string;
@@ -24,19 +27,61 @@ export default function Votes({
   hasdownVoted,
   hasSaved,
 }: Props) {
+  const pathname = usePathname();
+
   const handleSave = async () => {};
-  const handleVote = async (action: string) => {};
+
+  const handleVote = async (action: string) => {
+    if (!userId) throw new Error("user not found");
+
+    if (action === "upvote") {
+      if (type === "Question") {
+        await upvoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        });
+      } else if (type === "Answer") {
+        await upvoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        });
+      }
+    }
+
+    // Downvote action
+    if (action === "downvote") {
+      if (type === "Question") {
+        await downVoteQuestion({
+          questionId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        });
+      } else if (type === "Answer") {
+        await downVoteAnswer({
+          answerId: JSON.parse(itemId),
+          userId: JSON.parse(userId),
+          hasupVoted,
+          hasdownVoted,
+          path: pathname,
+        });
+      }
+    }
+  };
 
   return (
     <div className="flex gap-5">
       <div className="flex-center gap-2.5">
         <div className="flex-center  gap-1.5">
           <Image
-            src={
-              hasupVoted
-                ? "/assets/icons/upvoted.svg"
-                : "/assets/icons/upvote.svg"
-            }
+            src={`/assets/icons/${hasupVoted ? "upvoted" : "upvote"}.svg`}
             width={18}
             height={18}
             alt="upvote"
@@ -51,11 +96,7 @@ export default function Votes({
         </div>
         <div className="flex-center  gap-1.5">
           <Image
-            src={
-              hasdownVoted
-                ? "/assets/icons/downvoted.svg"
-                : "/assets/icons/downvote.svg"
-            }
+            src={`/assets/icons/${hasdownVoted ? "downvoted" : "downvote"}.svg`}
             width={18}
             height={18}
             alt="downvote"
@@ -71,11 +112,7 @@ export default function Votes({
       </div>
       {type === "Question" && (
         <Image
-          src={
-            hasSaved
-              ? "/assets/icons/star-filled.svg"
-              : "/assets/icons/star-red.svg"
-          }
+          src={`/assets/icons/${hasSaved ? "star-filled" : "star-red"}.svg`}
           width={18}
           height={18}
           alt="star"

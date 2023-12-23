@@ -157,3 +157,12 @@ export interface GetUserStatsParams {
 export interface DeleteUserParams {
   clerkId: string;
 }
+
+export interface CommonVoteParams {
+  id: string;
+  userId: string;
+  hasupVoted: boolean;
+  hasdownVoted: boolean;
+  type: string;
+  vote: string;
+}

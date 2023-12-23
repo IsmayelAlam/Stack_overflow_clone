@@ -1,10 +1,15 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/mongoose";
-import { CreateAnswerParams, GetAnswersParams } from "./shared.types";
+import {
+  AnswerVoteParams,
+  CreateAnswerParams,
+  GetAnswersParams,
+} from "./shared.types";
 import Answer from "@/database/answer.model";
 import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
+import { voting } from "./commonActions";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -44,6 +49,50 @@ export const getAnswers = async (params: GetAnswersParams) => {
       .sort({ createdAt: -1 });
 
     return { answers };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const upvoteAnswer = async (params: AnswerVoteParams) => {
+  try {
+    connectToDatabase();
+
+    const { answerId, userId, hasupVoted, path, hasdownVoted } = params;
+
+    await voting({
+      id: answerId,
+      userId,
+      hasupVoted,
+      hasdownVoted,
+      type: "answer",
+      vote: "up",
+    });
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const downVoteAnswer = async (params: AnswerVoteParams) => {
+  try {
+    connectToDatabase();
+
+    const { answerId, userId, hasupVoted, path, hasdownVoted } = params;
+
+    await voting({
+      id: answerId,
+      userId,
+      hasupVoted,
+      hasdownVoted,
+      type: "answer",
+      vote: "down",
+    });
+
+    revalidatePath(path);
   } catch (error) {
     console.log(error);
     throw error;
