@@ -30,7 +30,7 @@ export interface SearchParamsProps {
 }
 export interface URLProps {
   params: { id: string };
-  searchParam: { [key: string]: string | undefined };
+  searchParams: { [key: string]: string | undefined };
 }
 export interface BadgeCounts {
   GOLD: number;
