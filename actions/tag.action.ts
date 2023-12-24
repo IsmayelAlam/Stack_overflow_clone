@@ -47,7 +47,7 @@ export async function getAllTags(params: GetAllTagsParams) {
 export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
   try {
     connectToDatabase();
-    const { tagId, page, pageSize, searchQuery } = params;
+    const { tagId, searchQuery } = params;
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
 

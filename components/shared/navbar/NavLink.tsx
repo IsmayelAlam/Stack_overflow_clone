@@ -1,10 +1,10 @@
 "use client";
 
 import { SidebarLink } from "@/types";
+import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
 
 export default function NavLink({ link }: { link: SidebarLink }) {
   const pathName = usePathname();
@@ -12,10 +12,14 @@ export default function NavLink({ link }: { link: SidebarLink }) {
     (pathName.includes(link.route) && link.route.length > 1) ||
     pathName === link.route;
 
+  const { userId } = useAuth();
+
+  const href =
+    link.route === "/profile" ? `${link.route}/${userId}` : link.route;
+
   return (
     <Link
-      href={link.route}
-      key={link.route}
+      href={href}
       className={`flex cursor-pointer items-center justify-start gap-4 bg-transparent p-4 ${
         isActive
           ? "primary-gradient rounded-lg text-light-900"

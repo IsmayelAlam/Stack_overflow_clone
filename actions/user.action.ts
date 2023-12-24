@@ -4,18 +4,20 @@ import Question from "@/database/question.model";
 import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
 import { connectToDatabase } from "@/lib/mongoose";
+import { FilterQuery } from "mongoose";
 import { revalidatePath } from "next/cache";
 import {
   CreateUserParams,
   DeleteUserParams,
   GetAllUsersParams,
   GetSavedQuestionsParams,
+  GetUserByIdParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
-import { FilterQuery } from "mongoose";
+import Answer from "@/database/answer.model";
 
-export async function getUserById(params: any) {
+export async function getUserById(params: GetUserByIdParams) {
   try {
     connectToDatabase();
     const { userId } = params;
@@ -141,7 +143,9 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     const user = await User.findOne({ clerkId }).populate({
       path: "saved",
       match: query,
-      option: {},
+      options: {
+        sort: { createdAt: -1 },
+      },
       populate: [
         { path: "tags", model: Tag, select: "_id name" },
         { path: "author", model: User, select: "_id clerkId name picture" },
@@ -149,6 +153,25 @@ export async function getSavedQuestions(params: GetSavedQuestionsParams) {
     });
 
     return { questions: user.saved };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getUserInfo(params: GetUserByIdParams) {
+  try {
+    connectToDatabase();
+    const { userId } = params;
+
+    // get user by id
+    const user = await User.findOne({ clerkId: userId });
+    if (!user) throw new Error("no user found");
+
+    const totalQuestion = await Question.countDocuments({ author: user._id });
+    const totalAnswer = await Answer.countDocuments({ author: user._id });
+
+    return { user, totalQuestion, totalAnswer };
   } catch (error) {
     console.log(error);
     throw error;
