@@ -6,7 +6,7 @@ import RenderTag from "@/components/shared/RenderTag";
 import { formatAndDivideNumber, getTimeStamp } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@clerk/nextjs";
+import { SignedIn, auth } from "@clerk/nextjs";
 import { getUserById } from "@/actions/user.action";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Votes from "@/components/shared/Votes";
@@ -41,11 +41,11 @@ export default async function Question({ params }: { params: { id: string } }) {
             <Votes
               type="Question"
               itemId={JSON.stringify(question._id)}
-              userId={JSON.stringify(mongoUser._id)}
+              userId={JSON.stringify(mongoUser?._id)}
               upvotes={question.upvotes.length}
-              hasupVoted={question.upvotes.includes(mongoUser._id)}
+              hasupVoted={question.upvotes.includes(mongoUser?._id)}
               downvotes={question.downvotes.length}
-              hasdownVoted={question.downvotes.includes(mongoUser._id)}
+              hasdownVoted={question.downvotes.includes(mongoUser?._id)}
               hasSaved={mongoUser?.saved.includes(question._id)}
             />
           </div>
@@ -93,15 +93,17 @@ export default async function Question({ params }: { params: { id: string } }) {
 
       <AllAnswers
         questionId={question.id}
-        userId={mongoUser._id}
+        userId={mongoUser?._id}
         totalAnswers={question.answers.length}
       />
 
-      <Answer
-        question={question.content}
-        questionId={JSON.stringify(question._id)}
-        authorId={JSON.stringify(mongoUser._id)}
-      />
+      <SignedIn>
+        <Answer
+          question={question.content}
+          questionId={JSON.stringify(question._id)}
+          authorId={JSON.stringify(mongoUser?._id)}
+        />
+      </SignedIn>
     </>
   );
 }

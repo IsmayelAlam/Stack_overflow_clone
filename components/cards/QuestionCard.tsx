@@ -13,6 +13,7 @@ interface Props {
   views: number;
   answers: Array<object>;
   createdAt: Date;
+  clerkId?: string | null;
 }
 
 export default function QuestionCard({
@@ -24,6 +25,7 @@ export default function QuestionCard({
   views,
   answers,
   createdAt,
+  clerkId,
 }: Props) {
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">

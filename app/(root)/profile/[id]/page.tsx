@@ -1,5 +1,8 @@
 import { getUserInfo } from "@/actions/user.action";
+import AnswersTab from "@/components/shared/AnswersTab";
 import ProfileLink from "@/components/shared/ProfileLink";
+import QuestionTab from "@/components/shared/QuestionTab";
+import Stats from "@/components/shared/Stats";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getJoinedDate } from "@/lib/utils";
@@ -9,10 +12,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function Profile({ params, searchParams }: URLProps) {
-  const { user } = await getUserInfo({ userId: params.id });
+  const { user, totalAnswer, totalQuestion } = await getUserInfo({
+    userId: params.id,
+  });
   const { userId } = auth();
-
-  console.log(userId, user.clerkId);
 
   return (
     <>
@@ -70,10 +73,7 @@ export default async function Profile({ params, searchParams }: URLProps) {
         </div>
       </div>
 
-      <div>
-        Stats reputation=reputation totalQuestions=totalQuestions
-        totalAnswers=totalAnswers badges=badgeCounts
-      </div>
+      <Stats totalQuestions={totalQuestion} totalAnswers={totalAnswer} />
 
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-1">
@@ -89,10 +89,18 @@ export default async function Profile({ params, searchParams }: URLProps) {
             value="top-posts"
             className="mt-5 flex w-full flex-col gap-6"
           >
-            QuestionTab searchProps=searchParams userId=user._id clerkId=clerkId
+            <QuestionTab
+              searchProps={searchParams}
+              userId={user._id}
+              clerkId={userId}
+            />
           </TabsContent>
           <TabsContent value="answers">
-            AnswersTab searchProps=searchParams userId=user._id clerkId=clerkId
+            <AnswersTab
+              searchProps={searchParams}
+              userId={user._id}
+              clerkId={userId}
+            />
           </TabsContent>
         </Tabs>
       </div>

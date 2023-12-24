@@ -14,8 +14,12 @@ export default function NavLink({ link }: { link: SidebarLink }) {
 
   const { userId } = useAuth();
 
-  const href =
-    link.route === "/profile" ? `${link.route}/${userId}` : link.route;
+  let href = link.route;
+
+  if (link.route === "/profile" && userId) href = `${link.route}/${userId}`;
+
+  if ((link.route === "/profile" || link.route === "/ask-question") && !userId)
+    return null;
 
   return (
     <Link

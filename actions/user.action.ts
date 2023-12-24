@@ -12,6 +12,7 @@ import {
   GetAllUsersParams,
   GetSavedQuestionsParams,
   GetUserByIdParams,
+  GetUserStatsParams,
   ToggleSaveQuestionParams,
   UpdateUserParams,
 } from "./shared.types";
@@ -177,3 +178,58 @@ export async function getUserInfo(params: GetUserByIdParams) {
     throw error;
   }
 }
+
+export const getUserQuestions = async (params: GetUserStatsParams) => {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+    // pagination
+
+    const skipAmount = (page - 1) * pageSize;
+
+    const totalQuestions = await Question.countDocuments({ author: userId });
+
+    const userQuestions = await Question.find({ author: userId })
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort({
+        createdAt: -1,
+        views: -1,
+        upvotes: -1,
+      })
+      .populate("tags", "_id name")
+      .populate("author", "_id clerkId name picture");
+
+    const isNextQuestion = totalQuestions > skipAmount + userQuestions.length;
+
+    return { totalQuestions, userQuestions, isNextQuestion };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export const getUserAnswers = async (params: GetUserStatsParams) => {
+  try {
+    connectToDatabase();
+    const { userId, page = 1, pageSize = 10 } = params;
+    const skipAmount = (page - 1) * pageSize;
+
+    const totalAnswers = await Answer.countDocuments({ author: userId });
+    const userAnswers = await Answer.find({ author: userId })
+      .skip(skipAmount)
+      .limit(pageSize)
+      .sort({
+        createdAt: -1,
+        upvotes: -1,
+      })
+      .populate("question", "_id title")
+      .populate("author", "_id clerkId name picture");
+
+    const isNextAnswer = totalAnswers > skipAmount + userAnswers.length;
+
+    return { totalAnswers, userAnswers, isNextAnswer };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
