@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 "use client";
 
-import { createQuestion } from "@/actions/question.action";
+import { createQuestion, editQuestion } from "@/actions/question.action";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useTheme } from "@/context/ThemeProvider";
 import { questionSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
@@ -22,23 +23,33 @@ import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Badge } from "../ui/badge";
-import { useTheme } from "@/context/ThemeProvider";
 
-const type: any = "Create";
+interface QuestionProps {
+  type?: string;
+  mongoUserId: string;
+  questionData?: string;
+}
 
-export default function Questions({ userId }: { userId: string }) {
+export default function Questions({
+  mongoUserId,
+  type,
+  questionData,
+}: QuestionProps) {
   const editorRef = useRef(null);
   const { mode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
+  const questionDetails = questionData ? JSON.parse(questionData) : "";
+  const groupTags = questionDetails?.tags?.map((tag: any) => tag.name);
+
   const form = useForm<z.infer<typeof questionSchema>>({
     resolver: zodResolver(questionSchema),
     defaultValues: {
-      title: "",
+      title: questionDetails.title || "",
       explanation: "",
-      tags: [],
+      tags: groupTags || [],
     },
   });
 
@@ -46,17 +57,23 @@ export default function Questions({ userId }: { userId: string }) {
     setIsSubmitting(true);
 
     try {
-      const newQuestion = {
+      const question = {
         title: values.title,
         content: values.explanation,
         tags: values.tags,
-        author: JSON.parse(userId),
+        author: JSON.parse(mongoUserId),
         path: pathname,
       };
 
-      await createQuestion(newQuestion);
+      if (type === "Edit") {
+        await editQuestion({ ...question, questionId: questionDetails._id });
 
-      router.push("/");
+        router.push(`/question/${questionDetails._id}`);
+      } else {
+        // contain all form data
+        await createQuestion(question);
+        router.push("/");
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -90,6 +107,7 @@ export default function Questions({ userId }: { userId: string }) {
       }
     }
   };
+
   const handleTagRemove = (tag: string, field: any) => {
     const newTags = field.value.filter((t: string) => t !== tag);
     form.setValue("tags", newTags);
@@ -101,6 +119,7 @@ export default function Questions({ userId }: { userId: string }) {
         <FormField
           control={form.control}
           name="title"
+          defaultValue={questionDetails.title}
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
@@ -134,7 +153,7 @@ export default function Questions({ userId }: { userId: string }) {
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
                   // @ts-ignore
                   onInit={(evt, editor) => (editorRef.current = editor)}
-                  initialValue=""
+                  initialValue={questionDetails.content || ""}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
                   init={{

@@ -9,11 +9,11 @@ import { connectToDatabase } from "../lib/mongoose";
 import {
   CreateQuestionParams,
   DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   QuestionVoteParams,
 } from "./shared.types";
 import { voting } from "./commonActions";
-import console from "console";
 import Answer from "@/database/answer.model";
 import Interaction from "@/database/interaction.model";
 
@@ -93,6 +93,51 @@ export async function createQuestion(params: CreateQuestionParams) {
   }
 }
 
+export const editQuestion = async (params: EditQuestionParams) => {
+  try {
+    connectToDatabase();
+
+    const { questionId, title, content, path } = params;
+
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) {
+      throw new Error("No question found");
+    }
+    question.title = title;
+    question.content = content;
+
+    await question.save();
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const deleteQuestion = async (params: DeleteQuestionParams) => {
+  try {
+    connectToDatabase();
+    const { questionId, path } = params;
+
+    const question = await Question.findById(questionId);
+    if (!question) throw new Error("No answer found");
+
+    await Question.deleteOne({ _id: questionId });
+    await Answer.deleteMany({ question: questionId });
+    await Interaction.deleteMany({ question: questionId });
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    );
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export const upvoteQuestion = async (params: QuestionVoteParams) => {
   try {
     connectToDatabase();
@@ -121,8 +166,6 @@ export const downVoteQuestion = async (params: QuestionVoteParams) => {
 
     const { questionId, userId, hasupVoted, path, hasdownVoted } = params;
 
-    console.log(params);
-
     await voting({
       id: questionId,
       userId,
@@ -131,29 +174,6 @@ export const downVoteQuestion = async (params: QuestionVoteParams) => {
       type: "question",
       vote: "down",
     });
-
-    revalidatePath(path);
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
-export const deleteQuestion = async (params: DeleteQuestionParams) => {
-  try {
-    connectToDatabase();
-    const { questionId, path } = params;
-
-    const question = await Question.findById(questionId);
-    if (!question) throw new Error("No answer found");
-
-    await Question.deleteOne({ _id: questionId });
-    await Answer.deleteMany({ question: questionId });
-    await Interaction.deleteMany({ question: questionId });
-    await Tag.updateMany(
-      { question: questionId },
-      { $pull: { questions: questionId } }
-    );
 
     revalidatePath(path);
   } catch (error) {

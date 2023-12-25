@@ -10,8 +10,9 @@ import { SignedIn, auth } from "@clerk/nextjs";
 import { getUserById } from "@/actions/user.action";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Votes from "@/components/shared/Votes";
+import { URLProps } from "@/types";
 
-export default async function Question({ params }: { params: { id: string } }) {
+export default async function Question({ params }: URLProps) {
   const question = await getQuestionsById({ questionId: params.id });
 
   const { userId: clerkId } = auth();
