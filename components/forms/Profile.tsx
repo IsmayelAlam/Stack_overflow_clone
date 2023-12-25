@@ -16,6 +16,8 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { Textarea } from "../ui/textarea";
 import { profileSchema } from "@/lib/validation";
+import { usePathname, useRouter } from "next/navigation";
+import { updateUser } from "@/actions/user.action";
 
 interface ProfileProps {
   clerkId: string;
@@ -25,6 +27,8 @@ interface ProfileProps {
 export default function Profile({ clerkId, user }: ProfileProps) {
   const userInfo = JSON.parse(user);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
@@ -37,10 +41,33 @@ export default function Profile({ clerkId, user }: ProfileProps) {
     },
   });
 
+  async function onSubmit(values: z.infer<typeof profileSchema>) {
+    setIsSubmitting(true);
+    try {
+      await updateUser({
+        clerkId,
+        updateData: {
+          name: values.name,
+          username: values.username,
+          portfoliowebsite: values.portfoliowebsite,
+          location: values.location,
+          bio: values.bio,
+        },
+        path: pathname,
+      });
+
+      router.back();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <Form {...form}>
       <form
-        // onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="my-8 w-full space-y-8"
       >
         <FormField
