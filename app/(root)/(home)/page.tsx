@@ -6,10 +6,11 @@ import NoResults from "@/components/shared/NoResults";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-export default async function Home() {
-  const questions = await getQuestions();
+export default async function Home({ searchParams }: SearchParamsProps) {
+  const questions = await getQuestions({ searchQuery: searchParams.q });
 
   return (
     <>

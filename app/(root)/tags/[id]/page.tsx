@@ -25,7 +25,7 @@ export default async function Tag({ params, searchParams }: URLProps) {
         />
       </div>
 
-      <div className="mt-10 flex flex-col gap-6">
+      <div className="my-10 flex flex-col gap-6">
         {questions.length > 0 ? (
           questions?.map((question: any) => (
             <QuestionCard

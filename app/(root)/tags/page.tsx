@@ -3,10 +3,11 @@ import Filter from "@/components/shared/Filter";
 import NoResults from "@/components/shared/NoResults";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { TagFilters } from "@/constants/filters";
+import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
-export default async function Tags() {
-  const tags = await getAllTags({});
+export default async function Tags({ searchParams }: SearchParamsProps) {
+  const tags = await getAllTags({ searchQuery: searchParams.q });
 
   return (
     <>
