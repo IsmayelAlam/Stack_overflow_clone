@@ -3,6 +3,7 @@ import { SignedIn } from "@clerk/nextjs";
 import Link from "next/link";
 import Metric from "../shared/Metric";
 import RenderTag from "../shared/RenderTag";
+import EditDeleteAction from "../shared/EditDeleteAction";
 
 interface Props {
   _id: string;
@@ -27,6 +28,8 @@ export default function QuestionCard({
   createdAt,
   clerkId,
 }: Props) {
+  const showActionBtn = clerkId && clerkId === author.clerkId;
+
   return (
     <div className="card-wrapper rounded-[10px] p-9 sm:px-11">
       <div className="flex flex-col-reverse items-start justify-between gap-5 sm:flex-row">
@@ -41,7 +44,11 @@ export default function QuestionCard({
           </Link>
         </div>
 
-        <SignedIn></SignedIn>
+        <SignedIn>
+          {showActionBtn && (
+            <EditDeleteAction type="Question" itemId={JSON.stringify(_id)} />
+          )}
+        </SignedIn>
       </div>
 
       <div className="mt-3.5 flex flex-wrap gap-2">
