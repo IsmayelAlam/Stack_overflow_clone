@@ -63,7 +63,7 @@ export default async function Profile({ params, searchParams }: URLProps) {
         <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
           <SignedIn>
             {userId === user.clerkId && (
-              <Link href="/profile/edit">
+              <Link href={`/profile/edit/${userId}`}>
                 <Button className="paragraph-medium btn-secondary text-dark300_light900 min-h-[46px] min-w-[175px] px-4 py-3">
                   Edit profile
                 </Button>
