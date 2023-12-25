@@ -119,7 +119,6 @@ export default function Questions({
         <FormField
           control={form.control}
           name="title"
-          defaultValue={questionDetails.title}
           render={({ field }) => (
             <FormItem className="flex w-full flex-col">
               <FormLabel className="paragraph-semibold text-dark400_light800">
@@ -182,7 +181,7 @@ export default function Questions({
                       "alignright alignjustify | bullist numlist ",
                     skin: mode === "dark" ? "oxide-dark" : "oxide",
                     content_style: "body { font-family:Inter; font-size:16px }",
-                    content_css: mode === "dark" ? "dark" : "light",
+                    content_css: mode === "dark" ? "dark" : "default",
                   }}
                 />
               </FormControl>
