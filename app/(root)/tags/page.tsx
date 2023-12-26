@@ -63,8 +63,6 @@ export default async function Tags({ searchParams }: SearchParamsProps) {
           />
         )}
       </section>
-
-      {/* Pagination */}
     </>
   );
 }

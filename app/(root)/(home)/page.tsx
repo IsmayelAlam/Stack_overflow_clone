@@ -3,6 +3,7 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/home/HomeFilter";
 import Filter from "@/components/shared/Filter";
 import NoResults from "@/components/shared/NoResults";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { HomePageFilters } from "@/constants/filters";
@@ -14,6 +15,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     searchQuery: searchParams.q,
     filter: searchParams.filter,
   });
+
+  const pageNumber = searchParams?.page ? +searchParams?.page : 1;
 
   return (
     <>
@@ -64,6 +67,8 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           />
         )}
       </div>
+
+      <Pagination pageNumber={pageNumber} isNext={true} />
     </>
   );
 }
