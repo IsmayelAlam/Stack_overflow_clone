@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import GlobalFilters from "./GlobalFilters";
 import Link from "next/link";
+import { globalSearch } from "@/actions/general.action";
 
 export default function GlobalResult() {
   const searchParams = useSearchParams();
@@ -20,11 +21,11 @@ export default function GlobalResult() {
       setResult([]);
       setIsLoading(true);
       try {
-        // const res = await globalSearch({
-        //   query: global,
-        //   type
-        // });
-        // setResult(JSON.parse(res));
+        const res = await globalSearch({
+          query: global,
+          type,
+        });
+        setResult(JSON.parse(res));
       } catch (error) {
         console.log(error);
         throw error;
@@ -55,9 +56,9 @@ export default function GlobalResult() {
 
   return (
     <div className="absolute top-full z-10 mt-3 w-full rounded-xl bg-light-800 py-5 shadow-sm dark:bg-dark-400">
-      <p className="text-dark400_light900 paragraph-semibold px-5">
+      <div className="text-dark400_light900 paragraph-semibold px-5">
         <GlobalFilters />
-      </p>
+      </div>
       <div className="my-5 h-[1px] bg-light-700/50 dark:bg-dark-500/50"></div>
       <div className="space-y-5">
         <p className="text-dark400_light900 paragraph-semibold px-5">
