@@ -11,12 +11,15 @@ import { SearchParamsProps } from "@/types";
 import Link from "next/link";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const questions = await getQuestions({
+  const pageSize = 20;
+  const page = searchParams?.page ? +searchParams?.page : 1;
+
+  const { questions, totalQuestions, isNext } = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page,
+    pageSize,
   });
-
-  const pageNumber = searchParams?.page ? +searchParams?.page : 1;
 
   return (
     <>
@@ -43,7 +46,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         />
       </div>
       <HomeFilter />
-      <div className="mt-10 flex flex-col gap-6">
+      <div className="my-10 flex flex-col gap-6">
         {questions.length > 0 ? (
           questions?.map((question) => (
             <QuestionCard
@@ -68,7 +71,9 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         )}
       </div>
 
-      <Pagination pageNumber={pageNumber} isNext={true} />
+      {pageSize < totalQuestions && (
+        <Pagination pageNumber={page} isNext={isNext} />
+      )}
     </>
   );
 }
