@@ -12,7 +12,7 @@ import AllAnswers from "@/components/shared/AllAnswers";
 import Votes from "@/components/shared/Votes";
 import { URLProps } from "@/types";
 
-export default async function Question({ params }: URLProps) {
+export default async function Question({ params, searchParams }: URLProps) {
   const question = await getQuestionsById({ questionId: params.id });
 
   const { userId: clerkId } = auth();
@@ -96,6 +96,8 @@ export default async function Question({ params }: URLProps) {
         questionId={question.id}
         userId={mongoUser?._id}
         totalAnswers={question.answers.length}
+        filter={searchParams?.filter}
+        page={searchParams?.page}
       />
 
       <SignedIn>
