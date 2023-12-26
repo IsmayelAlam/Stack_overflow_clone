@@ -6,6 +6,7 @@ import ParseHTML from "./ParseHTML";
 import Image from "next/image";
 import Link from "next/link";
 import Votes from "./Votes";
+import Pagination from "./Pagination";
 
 interface Props {
   questionId: string;
@@ -22,10 +23,11 @@ export default async function AllAnswers({
   page,
   filter,
 }: Props) {
-  const { answers } = await getAnswers({
+  const { answers, isNext } = await getAnswers({
     questionId,
     sortBy: filter,
     page: page ? +page : 1,
+    pageSize: 10,
   });
 
   return (
@@ -78,7 +80,7 @@ export default async function AllAnswers({
           </article>
         ))}
       </div>
-      <div className="mt-10">Pagination</div>
+      <Pagination pageNumber={page ? +page : 1} isNext={isNext} />
     </div>
   );
 }

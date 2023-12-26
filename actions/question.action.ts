@@ -58,7 +58,7 @@ export async function getQuestions(params: GetQuestionsParams) {
 
     const isNext = totalQuestions > skipAmount + questions.length;
 
-    return { questions, totalQuestions, isNext };
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

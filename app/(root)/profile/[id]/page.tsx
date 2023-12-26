@@ -16,6 +16,7 @@ export default async function Profile({ params, searchParams }: URLProps) {
     userId: params.id,
   });
   const { userId } = auth();
+  const page = searchParams?.page ? +searchParams.page : 1;
 
   return (
     <>
@@ -89,18 +90,10 @@ export default async function Profile({ params, searchParams }: URLProps) {
             value="top-posts"
             className="mt-5 flex w-full flex-col gap-6"
           >
-            <QuestionTab
-              searchProps={searchParams}
-              userId={user._id}
-              clerkId={userId}
-            />
+            <QuestionTab userId={user._id} clerkId={userId} page={page} />
           </TabsContent>
           <TabsContent value="answers">
-            <AnswersTab
-              searchProps={searchParams}
-              userId={user._id}
-              clerkId={userId}
-            />
+            <AnswersTab userId={user._id} clerkId={userId} page={page} />
           </TabsContent>
         </Tabs>
       </div>

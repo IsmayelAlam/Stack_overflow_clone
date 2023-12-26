@@ -1,18 +1,20 @@
 import { getUserQuestions } from "@/actions/user.action";
 import QuestionCard from "../cards/QuestionCard";
+import Pagination from "./Pagination";
 interface QuestionTabProps {
   userId: string;
   clerkId?: string | null;
-  searchProps?: { [key: string]: string | undefined };
+  page: number;
 }
 
 export default async function QuestionTab({
-  searchProps,
   userId,
   clerkId,
+  page,
 }: QuestionTabProps) {
-  const { userQuestions } = await getUserQuestions({
+  const { userQuestions, isNext } = await getUserQuestions({
     userId,
+    page,
   });
 
   return (
@@ -31,7 +33,7 @@ export default async function QuestionTab({
           createdAt={question.createdAt}
         />
       ))}
-      <div className="mt-10">Pagination</div>
+      <Pagination pageNumber={page} isNext={isNext} />
     </>
   );
 }

@@ -14,7 +14,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
   const pageSize = 20;
   const page = searchParams?.page ? +searchParams?.page : 1;
 
-  const { questions, totalQuestions, isNext } = await getQuestions({
+  const { questions, isNext } = await getQuestions({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
     page,
@@ -71,9 +71,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         )}
       </div>
 
-      {pageSize < totalQuestions && (
-        <Pagination pageNumber={page} isNext={isNext} />
-      )}
+      <Pagination pageNumber={page} isNext={isNext} />
     </>
   );
 }

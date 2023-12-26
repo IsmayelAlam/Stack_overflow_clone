@@ -2,6 +2,7 @@ import { getSavedQuestions } from "@/actions/user.action";
 import QuestionCard from "@/components/cards/QuestionCard";
 import Filter from "@/components/shared/Filter";
 import NoResults from "@/components/shared/NoResults";
+import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { QuestionFilters } from "@/constants/filters";
 import { SearchParamsProps } from "@/types";
@@ -11,10 +12,15 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
   if (!userId) return null;
 
-  const { questions } = await getSavedQuestions({
+  const pageSize = 20;
+  const page = searchParams?.page ? +searchParams?.page : 1;
+
+  const { questions, isNext } = await getSavedQuestions({
     clerkId: userId,
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page,
+    pageSize,
   });
 
   return (
@@ -62,6 +68,8 @@ export default async function Collection({ searchParams }: SearchParamsProps) {
           />
         )}
       </div>
+
+      <Pagination pageNumber={page} isNext={isNext} />
     </>
   );
 }
