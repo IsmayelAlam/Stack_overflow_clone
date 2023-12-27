@@ -3,6 +3,7 @@
 import Answer from "@/database/answer.model";
 import Question from "@/database/question.model";
 import { CommonVoteParams } from "./shared.types";
+import User from "@/database/user.model";
 
 export async function voting({
   id,
@@ -47,6 +48,25 @@ export async function voting({
         });
 
   if (!value) throw new Error(`No ${type} found`);
+
+  if (vote === "up") {
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -2 : 2 * (hasdownVoted ? 2 : 1) },
+    });
+
+    await User.findByIdAndUpdate(value.author, {
+      $inc: { reputation: hasupVoted ? -10 : 10 * (hasdownVoted ? 2 : 1) },
+    });
+  }
+  if (vote === "down") {
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? 2 : -2 * (hasupVoted ? 2 : 1) },
+    });
+
+    await User.findByIdAndUpdate(value.author, {
+      $inc: { reputation: hasdownVoted ? 10 : -10 * (hasupVoted ? 2 : 1) },
+    });
+  }
 
   return value;
 }

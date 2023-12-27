@@ -12,6 +12,7 @@ import Question from "@/database/question.model";
 import { revalidatePath } from "next/cache";
 import { voting } from "./commonActions";
 import Interaction from "@/database/interaction.model";
+import User from "@/database/user.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -26,11 +27,21 @@ export async function createAnswer(params: CreateAnswerParams) {
 
     // add the answer to the question answers array
     // const questionObject =
-    await Question.findByIdAndUpdate(question, {
+    const questionObject = await Question.findByIdAndUpdate(question, {
       $push: {
         answers: newAnswer._id,
       },
     });
+
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question,
+      tags: questionObject.tags,
+      answer: newAnswer._id,
+    });
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
 
     revalidatePath(path);
 

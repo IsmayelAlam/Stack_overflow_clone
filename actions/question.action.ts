@@ -115,6 +115,15 @@ export async function createQuestion(params: CreateQuestionParams) {
       $push: { tags: { $each: tagDoc } },
     });
 
+    await Interaction.create({
+      user: author,
+      question: question._id,
+      action: "ask-question",
+      tags: tagDoc,
+    });
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
