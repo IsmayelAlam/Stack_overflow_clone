@@ -2,6 +2,12 @@ import { URLProps } from "@/types";
 import { getUserById } from "@/actions/user.action";
 import { auth } from "@clerk/nextjs";
 import Profile from "@/components/forms/Profile";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Edit Profile | Stack Overflow",
+  description: "Edit your profile on Stack Overflow clone app",
+};
 
 export default async function EditUser({ params, searchParams }: URLProps) {
   const { userId } = auth();

@@ -2,6 +2,12 @@ import { getUserById } from "@/actions/user.action";
 import Questions from "@/components/forms/Questions";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Ask Questions | Stack Overflow",
+  description: "Ask Questions on Stack Overflow clone app",
+};
 
 export default async function AskQuestions() {
   const { userId } = auth();

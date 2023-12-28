@@ -7,6 +7,12 @@ import LocalSearch from "@/components/shared/search/LocalSearch";
 import { QuestionFilters } from "@/constants/filters";
 import { SearchParamsProps } from "@/types";
 import { auth } from "@clerk/nextjs";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Collection | Stack Overflow",
+  description: "You saved questions on Stack Overflow clone app",
+};
 
 export default async function Collection({ searchParams }: SearchParamsProps) {
   const { userId } = auth();

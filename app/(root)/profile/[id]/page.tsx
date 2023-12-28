@@ -8,8 +8,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getJoinedDate } from "@/lib/utils";
 import { URLProps } from "@/types";
 import { SignedIn, auth } from "@clerk/nextjs";
+import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export async function generateMetadata({
+  params,
+}: URLProps): Promise<Metadata> {
+  const { user } = await getUserInfo({
+    userId: params.id,
+  });
+  return {
+    title: `${user.name} | Stack Overflow`,
+    description: `Browse ${user.name} profile on Stack Overflow clone app`,
+  };
+}
 
 export default async function Profile({ params, searchParams }: URLProps) {
   const { user, totalAnswer, totalQuestion, badgeCounts } = await getUserInfo({

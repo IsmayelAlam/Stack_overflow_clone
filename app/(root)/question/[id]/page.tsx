@@ -11,6 +11,19 @@ import { getUserById } from "@/actions/user.action";
 import AllAnswers from "@/components/shared/AllAnswers";
 import Votes from "@/components/shared/Votes";
 import { URLProps } from "@/types";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: URLProps): Promise<Metadata> {
+  const question = await getQuestionsById({
+    questionId: params.id,
+  });
+  return {
+    title: `${question.title} | Stack Overflow`,
+    description: `${question.title} question on Stack Overflow clone app`,
+  };
+}
 
 export default async function Question({ params, searchParams }: URLProps) {
   const question = await getQuestionsById({ questionId: params.id });

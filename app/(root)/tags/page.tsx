@@ -5,7 +5,13 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { TagFilters } from "@/constants/filters";
 import { SearchParamsProps } from "@/types";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Tags | Stack Overflow",
+  description: "Browse the Tags of Stack Overflow clone app",
+};
 
 export default async function Tags({ searchParams }: SearchParamsProps) {
   const pageSize = 20;

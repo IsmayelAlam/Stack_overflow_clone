@@ -5,7 +5,13 @@ import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { UserFilters } from "@/constants/filters";
 import { SearchParamsProps } from "@/types";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Community | Stack Overflow",
+  description: "Browse the community of Stack Overflow clone app",
+};
 
 export default async function Community({ searchParams }: SearchParamsProps) {
   const pageSize = 20;

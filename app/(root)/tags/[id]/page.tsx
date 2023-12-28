@@ -4,6 +4,19 @@ import NoResults from "@/components/shared/NoResults";
 import Pagination from "@/components/shared/Pagination";
 import LocalSearch from "@/components/shared/search/LocalSearch";
 import { URLProps } from "@/types";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: URLProps): Promise<Metadata> {
+  const { tagTitle } = await getQuestionsByTagId({
+    tagId: params.id,
+  });
+  return {
+    title: `Tags-${tagTitle} | Stack Overflow`,
+    description: "Browse the Tags of Stack Overflow clone app",
+  };
+}
 
 export default async function Tag({ params, searchParams }: URLProps) {
   const pageSize = 20;
