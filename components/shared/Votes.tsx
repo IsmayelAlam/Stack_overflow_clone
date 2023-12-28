@@ -7,7 +7,7 @@ import { toggleSaveQuestion } from "@/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { undefined } from "zod";
 
 interface Props {
@@ -32,17 +32,21 @@ export default function Votes({
   hasSaved,
 }: Props) {
   const pathname = usePathname();
+  const [voting, isVoting] = useState(false);
 
   const handleSave = async () => {
+    isVoting(true);
     await toggleSaveQuestion({
       questionId: JSON.parse(itemId),
       userId: JSON.parse(userId),
       path: pathname,
     });
+    isVoting(false);
   };
 
   const handleVote = async (action: string) => {
     if (!userId) throw new Error("user not found");
+    isVoting(true);
 
     if (action === "upvote") {
       if (type === "Question") {
@@ -84,6 +88,7 @@ export default function Votes({
         });
       }
     }
+    isVoting(false);
   };
 
   useEffect(() => {
@@ -102,7 +107,7 @@ export default function Votes({
             width={18}
             height={18}
             alt="upvote"
-            className="cursor-pointer"
+            className={voting ? "cursor-wait" : "cursor-pointer"}
             onClick={() => handleVote("upvote")}
           />
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
@@ -111,13 +116,13 @@ export default function Votes({
             </p>
           </div>
         </div>
-        <div className="flex-center  gap-1.5">
+        <div className="flex-center gap-1.5">
           <Image
             src={`/assets/icons/${hasdownVoted ? "downvoted" : "downvote"}.svg`}
             width={18}
             height={18}
             alt="downvote"
-            className="cursor-pointer"
+            className={voting ? "cursor-wait" : "cursor-pointer"}
             onClick={() => handleVote("downvote")}
           />
           <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1">
@@ -133,7 +138,7 @@ export default function Votes({
           width={18}
           height={18}
           alt="star"
-          className="cursor-pointer"
+          className={voting ? "cursor-wait" : "cursor-pointer"}
           onClick={handleSave}
         />
       )}
