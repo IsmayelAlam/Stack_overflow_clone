@@ -12,7 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function Profile({ params, searchParams }: URLProps) {
-  const { user, totalAnswer, totalQuestion } = await getUserInfo({
+  const { user, totalAnswer, totalQuestion, badgeCounts } = await getUserInfo({
     userId: params.id,
   });
   const { userId } = auth();
@@ -74,7 +74,12 @@ export default async function Profile({ params, searchParams }: URLProps) {
         </div>
       </div>
 
-      <Stats totalQuestions={totalQuestion} totalAnswers={totalAnswer} />
+      <Stats
+        totalQuestions={totalQuestion}
+        totalAnswers={totalAnswer}
+        badges={badgeCounts}
+        reputation={user.reputation}
+      />
 
       <div className="mt-10 flex gap-10">
         <Tabs defaultValue="top-posts" className="flex-1">
