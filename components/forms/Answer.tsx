@@ -6,7 +6,6 @@ import { useTheme } from "@/context/ThemeProvider";
 import { answerSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,6 +18,7 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
+import AiAnswer from "./AiAnswer";
 
 interface Props {
   question: string;
@@ -31,7 +31,6 @@ export default function Answer({ question, questionId, authorId }: Props) {
   const pathname = usePathname();
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmittingAI, setIsSubmittingAI] = useState(false);
 
   const form = useForm<z.infer<typeof answerSchema>>({
     resolver: zodResolver(answerSchema),
@@ -63,59 +62,18 @@ export default function Answer({ question, questionId, authorId }: Props) {
     }
   };
 
-  const generateAiAnswer = async () => {
-    if (!authorId) return;
-    setIsSubmittingAI(true);
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`,
-        {
-          method: "POST",
-          body: JSON.stringify({ question }),
-        }
-      );
-
-      const aiAnswer = await response.json();
-
-      // convert plaintext to html
-      const formatedAnswer = aiAnswer.reply.replace(/\n/g, "<br />");
-      if (editorRef.current) {
-        const editor = editorRef.current as any;
-        editor.setContent(formatedAnswer);
-      }
-    } catch (error: any) {
-      return;
-    } finally {
-      setIsSubmittingAI(false);
-    }
-  };
-
   return (
     <div className="my-8">
       <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
         <h4 className="paragraph-semibold text-dark400_light800">
           Write your answer here
         </h4>
-        <Button
-          className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
-          onClick={generateAiAnswer}
-        >
-          {isSubmittingAI ? (
-            <>Generating...</>
-          ) : (
-            <>
-              <Image
-                src="/assets/icons/stars.svg"
-                alt="star"
-                width={12}
-                height={12}
-                className="object-contain"
-              />
-              Generate AI answer
-            </>
-          )}
-        </Button>
+
+        <AiAnswer
+          question={question}
+          authorId={authorId}
+          editorRef={editorRef}
+        />
       </div>
 
       <Form {...form}>
